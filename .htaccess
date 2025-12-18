@@ -1,0 +1,26 @@
+# .htaccess file (Placed in the same folder as index.php)
+
+# 1. Block DIRECT access to the VENDOR folder (CRITICAL SECURITY)
+# Any request to /vendor/ will return a 403 Forbidden error.
+RewriteEngine On
+RewriteRule ^vendor/ - [F,L]
+
+
+# 2. Block DIRECT access to the QR CODE IMAGES folder listings
+# We allow access to specific files (like latest_qr.png) but block the index.
+# This prevents snooping on the folder contents.
+Options -Indexes
+# If you need to block the directory path itself, uncomment the next block:
+# <IfModule mod_rewrite.c>
+#    RewriteCond %{REQUEST_URI} ^/qr-code-images/$
+#    RewriteRule ^ - [F,L]
+# </IfModule>
+
+
+# 3. Prevent all cache-related issues for the main PHP script
+# This helps eliminate the "previous QR code on back button" problem.
+<Files "index.php">
+    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "Off"
+</Files>
